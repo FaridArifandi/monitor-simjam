@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Package, X, Camera, AlertCircle, Trash2, LayoutGrid, List, Eye, ArrowUpRight, MapPin } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import { fetchItems, createItem, uploadPhoto, deleteItem } from '../lib/dataService';
 import { categories } from '../lib/demoData';
 import ItemCard from '../components/ItemCard';
@@ -11,6 +12,7 @@ import styles from './Items.module.css';
 
 
 export default function Items() {
+  const { isAdmin } = useAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -142,10 +144,12 @@ export default function Items() {
           <h2 className={styles.title}>Daftar Inventaris Barang</h2>
           <p className={styles.subtitle}>Kelola semua data barang kantor di sini</p>
         </div>
-        <button className={styles.addBtn} onClick={() => setShowAddModal(true)}>
-          <Plus size={20} />
-          <span>Tambah Barang</span>
-        </button>
+        {isAdmin && (
+          <button className={styles.addBtn} onClick={() => setShowAddModal(true)}>
+            <Plus size={20} />
+            <span>Tambah Barang</span>
+          </button>
+        )}
       </section>
 
       {/* Search and filter toolbar */}
@@ -198,13 +202,15 @@ export default function Items() {
             {filteredItems.map((item) => (
               <div key={item.id} className={styles.cardWrapper}>
                 <ItemCard item={item} onBorrow={setActiveBorrowItem} />
-                <button
-                  onClick={() => handleDeleteItem(item.id)}
-                  className={styles.deleteCardBtn}
-                  title="Hapus Barang"
-                >
-                  <Trash2 size={14} />
-                </button>
+                {isAdmin && (
+                  <button
+                    onClick={() => handleDeleteItem(item.id)}
+                    className={styles.deleteCardBtn}
+                    title="Hapus Barang"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                )}
               </div>
             ))}
           </div>
@@ -269,13 +275,15 @@ export default function Items() {
                               <ArrowUpRight size={16} />
                             </button>
                           )}
-                          <button
-                            onClick={() => handleDeleteItem(item.id)}
-                            className={styles.tableDeleteBtn}
-                            title="Hapus Barang"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+                          {isAdmin && (
+                            <button
+                              onClick={() => handleDeleteItem(item.id)}
+                              className={styles.tableDeleteBtn}
+                              title="Hapus Barang"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>

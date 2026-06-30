@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { LayoutDashboard, Package, RefreshCw, Menu, X, Box } from 'lucide-react';
+import { LayoutDashboard, Package, RefreshCw, Menu, X, Box, UserCheck, LogIn, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 import ThemeToggle from './ThemeToggle';
 import styles from './Layout.module.css';
 
 export default function Layout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { isAdmin, logout } = useAuth();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -16,6 +18,13 @@ export default function Layout({ children }) {
     { to: '/items', label: 'Barang Kantor', icon: Package },
     { to: '/borrowings', label: 'Peminjaman', icon: RefreshCw },
   ];
+
+  if (isAdmin) {
+    navItems.push({ to: '/admin/users', label: 'Kelola User', icon: UserCheck });
+  } else {
+    navItems.push({ to: '/login', label: 'Login Admin', icon: LogIn });
+  }
+
 
   return (
     <div className={styles.container}>
@@ -60,6 +69,18 @@ export default function Layout({ children }) {
               </NavLink>
             );
           })}
+          {isAdmin && (
+            <button
+              onClick={() => {
+                logout();
+                setSidebarOpen(false);
+              }}
+              className={styles.logoutBtn}
+            >
+              <LogOut size={20} className={styles.navIcon} />
+              <span>Keluar (Admin)</span>
+            </button>
+          )}
         </nav>
 
         <div className={styles.sidebarFooter}>
@@ -72,8 +93,17 @@ export default function Layout({ children }) {
       <div className={styles.mainWrapper}>
         <header className={`glass ${styles.desktopHeader}`}>
           <div className={styles.headerTitle}>
-            <h3>Halo, Administrator</h3>
-            <p>Kelola dan pantau barang kantor dengan mudah</p>
+            {isAdmin ? (
+              <>
+                <h3>Halo, Admin</h3>
+                <p>Kelola database barang dan user kantor</p>
+              </>
+            ) : (
+              <>
+                <h3>Halo, Pengguna BPS</h3>
+                <p>Pantau barang kantor secara real-time</p>
+              </>
+            )}
           </div>
           <div className={styles.headerActions}>
             <ThemeToggle />

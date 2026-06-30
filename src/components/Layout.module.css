@@ -113,6 +113,29 @@
   color: var(--text-primary);
 }
 
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 0.95rem;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.logoutBtn:hover {
+  background: var(--danger-light);
+  color: var(--danger);
+}
+
+
 .navActive {
   background: var(--sidebar-active);
   color: var(--sidebar-text-active);

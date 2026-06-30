@@ -1,6 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { X, Calendar, User, Briefcase, Camera, Image, Check, AlertCircle } from 'lucide-react';
-import { createBorrowing, uploadPhoto } from '../lib/dataService';
+import { createBorrowing, uploadPhoto, fetchOfficeUsers } from '../lib/dataService';
 import styles from './BorrowModal.module.css';
 
 export default function BorrowModal({ item, onClose, onSuccess }) {
@@ -12,6 +12,19 @@ export default function BorrowModal({ item, onClose, onSuccess }) {
   const [photoPreview, setPhotoPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    async function loadUsers() {
+      try {
+        const res = await fetchOfficeUsers();
+        setUsers(res.data || []);
+      } catch (err) {
+        console.error('Gagal memuat database pengguna:', err);
+      }
+    }
+    loadUsers();
+  }, []);
 
   const fileInputRef = useRef(null);
 
@@ -99,14 +112,28 @@ export default function BorrowModal({ item, onClose, onSuccess }) {
             <label className={styles.label}>Nama Peminjam *</label>
             <div className={styles.inputWrapper}>
               <User className={styles.inputIcon} size={18} />
-              <input
-                type="text"
+              <select
                 required
-                placeholder="Nama lengkap peminjam..."
                 value={borrowerName}
-                onChange={(e) => setBorrowerName(e.target.value)}
-                className={styles.input}
-              />
+                onChange={(e) => {
+                  const selectedName = e.target.value;
+                  setBorrowerName(selectedName);
+                  const selectedUser = users.find((u) => u.name === selectedName);
+                  if (selectedUser) {
+                    setBorrowerDivision(selectedUser.division || '');
+                  } else {
+                    setBorrowerDivision('');
+                  }
+                }}
+                className={styles.select}
+              >
+                <option value="">-- Pilih Nama Peminjam --</option>
+                {users.map((u) => (
+                  <option key={u.id} value={u.name}>
+                    {u.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
@@ -116,10 +143,10 @@ export default function BorrowModal({ item, onClose, onSuccess }) {
               <Briefcase className={styles.inputIcon} size={18} />
               <input
                 type="text"
-                placeholder="Contoh: IPDS, Sosial, Umum..."
-                value={borrowerDivision}
-                onChange={(e) => setBorrowerDivision(e.target.value)}
-                className={styles.input}
+                disabled
+                placeholder="Divisi terisi otomatis..."
+                value={borrowerDivision || ''}
+                className={styles.inputDisabled}
               />
             </div>
           </div>

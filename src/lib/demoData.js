@@ -172,3 +172,12 @@ export const demoBorrowings = [
 ];
 
 export const categories = ['Elektronik', 'ATK', 'Furniture', 'Lainnya'];
+
+export const demoOfficeUsers = [
+  { id: 'u1', name: 'Ahmad Fauzi', division: 'Bidang Sosial' },
+  { id: 'u2', name: 'Siti Rahayu', division: 'Bidang Neraca' },
+  { id: 'u3', name: 'Budi Santoso', division: 'IPDS' },
+  { id: 'u4', name: 'Dewi Lestari', division: 'Humas' },
+  { id: 'u5', name: 'Riko Pratama', division: 'Umum' },
+];
+

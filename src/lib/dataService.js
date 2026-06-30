@@ -1,5 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient';
-import { demoItems, demoBorrowings } from './demoData';
+import { demoItems, demoBorrowings, demoOfficeUsers } from './demoData';
 
 // ============================================================
 // ITEMS
@@ -7,6 +7,8 @@ import { demoItems, demoBorrowings } from './demoData';
 
 let localItems = [...demoItems];
 let localBorrowings = [...demoBorrowings];
+let localOfficeUsers = [...demoOfficeUsers];
+
 
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
@@ -246,3 +248,63 @@ export async function uploadPhoto(file, folder = 'borrowings') {
 
   return { url: publicUrl, error: null };
 }
+
+// ============================================================
+// OFFICE USERS (ANGGOTA)
+// ============================================================
+
+export async function fetchOfficeUsers() {
+  if (!isSupabaseConfigured()) {
+    return { data: localOfficeUsers, error: null };
+  }
+  const { data, error } = await supabase
+    .from('office_users')
+    .select('*')
+    .order('created_at', { ascending: false });
+  return { data, error };
+}
+
+export async function createOfficeUser(user) {
+  if (!isSupabaseConfigured()) {
+    const newUser = {
+      ...user,
+      id: generateId(),
+      created_at: new Date().toISOString(),
+    };
+    localOfficeUsers = [newUser, ...localOfficeUsers];
+    return { data: newUser, error: null };
+  }
+  const { data, error } = await supabase
+    .from('office_users')
+    .insert([user])
+    .select()
+    .single();
+  return { data, error };
+}
+
+export async function updateOfficeUser(id, updates) {
+  if (!isSupabaseConfigured()) {
+    localOfficeUsers = localOfficeUsers.map((u) =>
+      u.id === id ? { ...u, ...updates } : u
+    );
+    const updated = localOfficeUsers.find((u) => u.id === id);
+    return { data: updated, error: null };
+  }
+  const { data, error } = await supabase
+    .from('office_users')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+  return { data, error };
+}
+
+export async function deleteOfficeUser(id) {
+  if (!isSupabaseConfigured()) {
+    localOfficeUsers = localOfficeUsers.filter((u) => u.id !== id);
+    return { error: null };
+  }
+  const { error } = await supabase.from('office_users').delete().eq('id', id);
+  return { error };
+}
+

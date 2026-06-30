@@ -47,6 +47,14 @@ Untuk mengaktifkan database real-time dan penyimpanan foto bukti:
 2. Di **SQL Editor** Supabase, jalankan query berikut untuk membuat tabel:
 
 ```sql
+-- Tabel Pengguna (Anggota BPS)
+CREATE TABLE office_users (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  division TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Tabel Barang
 CREATE TABLE items (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
