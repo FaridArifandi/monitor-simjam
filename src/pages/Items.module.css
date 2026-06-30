@@ -366,3 +366,189 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* Toolbar and layout toggle styles */
+.toolbarContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.searchBarWrapper {
+  flex: 1;
+  min-width: 250px;
+}
+
+.viewToggleGroup {
+  display: flex;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  gap: 2px;
+}
+
+.toggleViewBtn {
+  background: transparent;
+  border: none;
+  color: var(--text-tertiary);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.toggleViewBtn:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.toggleActive {
+  background: var(--bg-secondary) !important;
+  color: var(--primary) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Table layout views styles */
+.tableCard {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  padding: 12px;
+}
+
+.tableResponsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  padding: 14px 16px;
+  border-bottom: 2px solid var(--border-color);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.tableImageWrapper {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-xs);
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tableImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tablePlaceholderImage {
+  color: var(--text-tertiary);
+  opacity: 0.6;
+}
+
+.tableCode {
+  font-family: monospace;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  padding: 4px 8px;
+  border-radius: var(--radius-xs);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.tableItemName {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tableCategory {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.tableLocationRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.tableActions {
+  display: flex;
+  gap: 8px;
+}
+
+.tableActionBtn, .tableBorrowBtn, .tableDeleteBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  padding: 0;
+}
+
+.tableActionBtn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.tableBorrowBtn {
+  color: var(--primary);
+  border-color: rgba(59, 130, 246, 0.2);
+  background: var(--primary-light);
+}
+
+.tableBorrowBtn:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.tableDeleteBtn {
+  color: var(--danger);
+  border-color: rgba(239, 68, 68, 0.2);
+  background: var(--danger-light);
+}
+
+.tableDeleteBtn:hover {
+  background: var(--danger);
+  color: #fff;
+}

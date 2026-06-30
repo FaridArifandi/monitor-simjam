@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
-import { Plus, Package, X, Camera, AlertCircle, Trash2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Plus, Package, X, Camera, AlertCircle, Trash2, LayoutGrid, List, Eye, ArrowUpRight, MapPin } from 'lucide-react';
 import { fetchItems, createItem, uploadPhoto, deleteItem } from '../lib/dataService';
 import { categories } from '../lib/demoData';
 import ItemCard from '../components/ItemCard';
 import SearchBar from '../components/SearchBar';
+import StatusBadge from '../components/StatusBadge';
 import BorrowModal from '../components/BorrowModal';
 import styles from './Items.module.css';
+
 
 export default function Items() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'table'
   
   // Modals state
   const [showAddModal, setShowAddModal] = useState(false);
@@ -146,16 +150,36 @@ export default function Items() {
 
       {/* Search and filter toolbar */}
       <section className={`glass ${styles.toolbar}`}>
-        <SearchBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          categories={categories}
-        />
+        <div className={styles.toolbarContent}>
+          <div className={styles.searchBarWrapper}>
+            <SearchBar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              categories={categories}
+            />
+          </div>
+          <div className={styles.viewToggleGroup}>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`${styles.toggleViewBtn} ${viewMode === 'grid' ? styles.toggleActive : ''}`}
+              title="Tampilan Grid / Card"
+            >
+              <LayoutGrid size={18} />
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={`${styles.toggleViewBtn} ${viewMode === 'table' ? styles.toggleActive : ''}`}
+              title="Tampilan Tabel / List"
+            >
+              <List size={18} />
+            </button>
+          </div>
+        </div>
       </section>
 
-      {/* Grid of items */}
+      {/* List / Grid of items */}
       <section className={styles.gridSection}>
         {loading ? (
           <div className={styles.loadingGrid}>
@@ -169,7 +193,7 @@ export default function Items() {
             <h4>Tidak Ada Barang</h4>
             <p>Silakan sesuaikan filter pencarian atau tambahkan barang baru.</p>
           </div>
-        ) : (
+        ) : viewMode === 'grid' ? (
           <div className={styles.grid}>
             {filteredItems.map((item) => (
               <div key={item.id} className={styles.cardWrapper}>
@@ -183,6 +207,82 @@ export default function Items() {
                 </button>
               </div>
             ))}
+          </div>
+        ) : (
+          <div className={`glass ${styles.tableCard}`}>
+            <div className={styles.tableResponsive}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>Foto</th>
+                    <th>Kode</th>
+                    <th>Nama Barang</th>
+                    <th>Kategori</th>
+                    <th>Lokasi</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredItems.map((item) => (
+                    <tr key={item.id}>
+                      <td>
+                        <div className={styles.tableImageWrapper}>
+                          {item.image_url ? (
+                            <img src={item.image_url} alt={item.name} className={styles.tableImage} />
+                          ) : (
+                            <div className={styles.tablePlaceholderImage}>
+                              <Package size={18} />
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                      <td>
+                        <code className={styles.tableCode}>{item.code}</code>
+                      </td>
+                      <td>
+                        <span className={styles.tableItemName}>{item.name}</span>
+                      </td>
+                      <td>
+                        <span className={styles.tableCategory}>{item.category}</span>
+                      </td>
+                      <td>
+                        <div className={styles.tableLocationRow}>
+                          <MapPin size={14} />
+                          <span>{item.location || '-'}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <StatusBadge status={item.status} />
+                      </td>
+                      <td>
+                        <div className={styles.tableActions}>
+                          <Link to={`/items/${item.id}`} className={styles.tableActionBtn} title="Lihat Detail">
+                            <Eye size={16} />
+                          </Link>
+                          {item.status === 'tersedia' && (
+                            <button
+                              onClick={() => setActiveBorrowItem(item)}
+                              className={styles.tableBorrowBtn}
+                              title="Pinjam Barang"
+                            >
+                              <ArrowUpRight size={16} />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDeleteItem(item.id)}
+                            className={styles.tableDeleteBtn}
+                            title="Hapus Barang"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </section>
